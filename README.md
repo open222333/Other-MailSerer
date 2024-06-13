@@ -21,6 +21,18 @@
 
 # 用法
 
+DNS 指向
+
+```
+;; A Records
+admin.example.com.	1	IN	A	xxx.xxx.xxx.xxx
+mail.example.com.	1	IN	A	xxx.xxx.xxx.xxx
+
+;; MX Records
+example.com.	1	IN	MX	10 mail.example.com.
+mail.example.com.	1	IN	MX	10 mail.example.com.
+```
+
 ```bash
 git clone https://github.com/open222333/Other-MailServer.git mail_server
 cd mail_server
