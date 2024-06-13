@@ -17,11 +17,29 @@
 
 [RainLoop(Web 郵件客戶端)](https://github.com/open222333/Other-Note/blob/main/03_%E4%BC%BA%E6%9C%8D%E5%99%A8%E6%9C%8D%E5%8B%99/MailServer(%E9%83%B5%E7%AE%B1%E4%BC%BA%E6%9C%8D%E5%99%A8)/RainLoop(Web%20%E9%83%B5%E4%BB%B6%E5%AE%A2%E6%88%B6%E7%AB%AF).md)
 
-[Poste.io(郵件伺服器管理工具)](https://github.com/open222333/Other-Note/blob/main/03_%E4%BC%BA%E6%9C%8D%E5%99%A8%E6%9C%8D%E5%8B%99/MailServer(%E9%83%B5%E7%AE%B1%E4%BC%BA%E6%9C%8D%E5%99%A8)/Poste.io(%E9%83%B5%E4%BB%B6%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7).md)
-
 # 用法
 
+防火牆連接埠
+
+```bash
+ufw allow 25
+ufw allow 587
+ufw allow 465
+```
+
 DNS 指向
+
+```
+$ORIGIN example.com
+@     IN  A      10.11.12.13
+mail  IN  A      10.11.12.13
+
+; mail server for example.com
+@     IN  MX  10 mail.example.com.
+
+; Add SPF record
+@     IN  TXT    "v=spf1 mx -all"
+```
 
 ```
 ;; A Records

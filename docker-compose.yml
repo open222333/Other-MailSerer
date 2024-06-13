@@ -1,25 +1,26 @@
 version: "3"
 services:
   mailserver:
-    image: docker.io/mailserver/docker-mailserver:latest
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
     container_name: mailserver
-    hostname: mailserver
-    domainname: ${DOMAIN_NAME}
+    hostname: ${DOMAIN_NAME}
     ports:
       - "25:25"
       - "465:465"
       - "587:587"
       - "993:993"
     volumes:
-      - ./data/maildata:/var/mail
-      - ./data/mailstate:/var/mail-state
+      - ./data/mail-data:/var/mail
+      - ./data/mail-state:/var/mail-state
+      - ./data/mail-logs:/var/log/mail
       - ./conf/docker-mailserver:/tmp/docker-mailserver
-      - ./conf/ssl:/etc/letsencrypt/live
+      - /etc/localtime:/etc/localtime:ro
     environment:
-      - DMS_DEBUG=0
+      - ENABLE_RSPAMD=1
+      - ENABLE_CLAMAV=1
+      - ENABLE_FAIL2BAN=1
     cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
+      - NET_ADMIN # For Fail2Ban to work
     restart: always
   rainloop:
     image: hardware/rainloop
@@ -27,6 +28,35 @@ services:
     volumes:
       - ./data/rainloop:/rainloop/data
     restart: always
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - 34010:5432
+      - 33006:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=roundcube-mysql-pw
+      - MYSQL_DATABASE=roundcubemail
+  roundcubemail:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcubemail
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    volumes:
+      - ./data/www:/var/www/html
+    ports:
+      - 9001:80
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=mysql
+      - ROUNDCUBEMAIL_DB_HOST=mysql
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcube-mysql-pw
+      - ROUNDCUBEMAIL_SKIN=elastic
+      - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.${DOMAIN_NAME}
+      - ROUNDCUBEMAIL_SMTP_SERVER=tls://mail.${DOMAIN_NAME}
   nginx:
     image: nginx:latest
     container_name: nginx
