@@ -59,8 +59,5 @@ services:
     volumes:
       - ./conf/nginx:/etc/nginx/conf.d
       - ./conf/ssl:/etc/letsencrypt/live
-    depends_on:
-      - rainloop
-      - mailserver
     restart: always
 
