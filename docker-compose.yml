@@ -3,8 +3,8 @@ services:
   mailserver:
     image: docker.io/mailserver/docker-mailserver:latest
     container_name: mailserver
-    hostname: mail
-    domainname: example.com
+    hostname: mailserver
+    domainname: ${DOMAIN_NAME}
     ports:
       - "25:25"
       - "465:465"
@@ -30,6 +30,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    hostname: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -37,7 +38,7 @@ services:
       - ./conf/nginx:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
-      - poste
+      - rainloop
       - mailserver
     restart: always
 
