@@ -22,20 +22,20 @@
 # 用法
 
 ```bash
+git clone https://github.com/open222333/Other-MailServer.git mail_server
+cd mail_server
+```
+
+```bash
+domain_name="yourdomain.com"
 cp .env.sample .env
-vim .env
-```
-
-```bash
-cp postfix-main.cf.bak docker-mailserver/postfix-main.cf
-vim docker-mailserver/postfix-main.cf
-```
-
-```bash
 cp conf/admin.example.com.conf conf/nginx/admin.$domain_name.conf
 cp conf/mail.example.com.conf conf/nginx/mail.$domain_name.conf
-sed -i 's/example.com/$domain_name/g' conf/nginx/admin.$domain_name.conf
-sed -i 's/example.com/$domain_name/g' conf/nginx/mail.$domain_name.conf
+cp conf/postfix-main.cf.bak conf/docker-mailserver/postfix-main.cf
+sed -i "s/example.com/$domain_name/g" .env
+sed -i "s/example.com/$domain_name/g" conf/docker-mailserver/postfix-main.cf
+sed -i "s/example.com/$domain_name/g" conf/nginx/admin.$domain_name.conf
+sed -i "s/example.com/$domain_name/g" conf/nginx/mail.$domain_name.conf
 ```
 
 ```bash

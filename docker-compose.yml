@@ -14,7 +14,7 @@ services:
       - ./data/maildata:/var/mail
       - ./data/mailstate:/var/mail-state
       - ./conf/docker-mailserver:/tmp/docker-mailserver
-      - ./ssl:/etc/letsencrypt/live
+      - ./conf/ssl:/etc/letsencrypt/live
     environment:
       - DMS_DEBUG=0
     cap_add:
@@ -36,7 +36,7 @@ services:
       - "443:443"
     volumes:
       - ./conf/nginx:/etc/nginx/conf.d
-      - ./ssl:/etc/letsencrypt/live
+      - ./conf/ssl:/etc/letsencrypt/live
     depends_on:
       - rainloop
       - mailserver
