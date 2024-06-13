@@ -1,0 +1,17 @@
+version: "3"
+services:
+  poste:
+    image: analogic/poste.io
+    container_name: poste
+    hostname: poste
+    ports:
+      - "25:25"
+      - "80:80"
+      - "443:443"
+      - "110:110"
+      - "143:143"
+      - "993:993"
+      - "995:995"
+    volumes:
+      - ./data/poste:/data
+    restart: always

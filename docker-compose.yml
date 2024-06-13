@@ -1,6 +1,43 @@
 version: "3"
 services:
-  sample:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.test
+  mailserver:
+    image: docker.io/mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: mail
+    domainname: example.com
+    ports:
+      - "25:25"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - ./data/maildata:/var/mail
+      - ./data/mailstate:/var/mail-state
+      - ./conf/docker-mailserver:/tmp/docker-mailserver
+      - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+      - DMS_DEBUG=0
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    restart: always
+  rainloop:
+    image: hardware/rainloop
+    container_name: rainloop
+    volumes:
+      - ./data/rainloop:/rainloop/data
+    restart: always
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./conf/nginx:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - poste
+      - mailserver
+    restart: always
+

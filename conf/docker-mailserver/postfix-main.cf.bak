@@ -1,0 +1,3 @@
+myhostname = mail.example.com
+mydomain = example.com
+myorigin = $mydomain
