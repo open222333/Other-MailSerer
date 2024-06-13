@@ -22,15 +22,10 @@ services:
     cap_add:
       - NET_ADMIN # For Fail2Ban to work
     restart: always
-  rainloop:
-    image: hardware/rainloop
-    container_name: rainloop
-    volumes:
-      - ./data/rainloop:/rainloop/data
-    restart: always
   mysql:
     image: mysql:5.7
     container_name: mysql
+    hostname: mysql
     volumes:
       - ./data/mysql:/var/lib/mysql
     ports:
@@ -39,17 +34,12 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=roundcube-mysql-pw
       - MYSQL_DATABASE=roundcubemail
-  roundcubemail:
+  roundcube:
     image: roundcube/roundcubemail:latest
-    container_name: roundcubemail
-    depends_on:
-      - mysql
-    links:
-      - mysql
+    container_name: roundcube
+    hostname: roundcube
     volumes:
       - ./data/www:/var/www/html
-    ports:
-      - 9001:80
     environment:
       - ROUNDCUBEMAIL_DB_TYPE=mysql
       - ROUNDCUBEMAIL_DB_HOST=mysql
@@ -57,6 +47,8 @@ services:
       - ROUNDCUBEMAIL_SKIN=elastic
       - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.${DOMAIN_NAME}
       - ROUNDCUBEMAIL_SMTP_SERVER=tls://mail.${DOMAIN_NAME}
+    depends_on:
+      - mysql
   nginx:
     image: nginx:latest
     container_name: nginx
